@@ -14,6 +14,8 @@
             padding: 0;
             background-color: #f4f4f4;
             color: #333;
+            padding-top: 100px;
+            /* Espaço para o cabeçalho fixo */
         }
 
         .header {
@@ -22,6 +24,15 @@
             padding: 1.5rem 0;
             text-align: center;
             border-bottom: 5px solid #003d82;
+            position: fixed;
+            /* Fixa o cabeçalho no topo */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            /* Garante que o cabeçalho fique sobre o conteúdo */
+            box-sizing: border-box;
+            /* Garante que o padding não afete a largura total */
         }
 
         .header h1 {
@@ -156,7 +167,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 Prefeitura de Batatais. Todos os direitos reservados.</p>
+        <p>&copy; <span id="current-year"></span> Prefeitura de Batatais. Todos os direitos reservados.</p>
     </footer>
 
     <!-- 1. Importa os dados das escolas -->
@@ -167,6 +178,9 @@
         // Garante que o script rode após o carregamento da página
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('search-input');
+            const yearSpan = document.getElementById('current-year');
+            yearSpan.textContent = new Date().getFullYear(); // Define o ano atual
+
             const gridContainer = document.getElementById('escolas-grid');
 
             function renderEscolas(escolasParaRenderizar) {
