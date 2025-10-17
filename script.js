@@ -32,3 +32,6 @@ const escolas = [
     //     imagem: "caminho/para/imagem.jpg"
     // }
 ];
+
+// Ordena a lista de escolas em ordem alfabética pelo nome
+escolas.sort((a, b) => a.nome.localeCompare(b.nome));
