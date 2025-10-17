@@ -129,6 +129,14 @@
             background-color: #333;
             color: #fff;
         }
+
+        /* Media Query para responsividade em telas menores (celulares) */
+        @media (max-width: 768px) {
+            .escolas-grid {
+                grid-template-columns: 1fr;
+                /* Muda para uma única coluna */
+            }
+        }
     </style>
 </head>
 
@@ -148,7 +156,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2024 Prefeitura de Batatais. Todos os direitos reservados.</p>
+        <p>&copy; 2025 Prefeitura de Batatais. Todos os direitos reservados.</p>
     </footer>
 
     <!-- 1. Importa os dados das escolas -->
