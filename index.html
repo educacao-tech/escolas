@@ -1,1 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolas Municipais de Batatais - SP</title>
+    <style>
+        /* Estilos (mesmos do exemplo anterior para consistência) */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .header {
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-bottom: 5px solid #003d82;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Estilo para o campo de busca */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            /* Garante que padding não afete a largura total */
+        }
+
+        .escolas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .escola-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .escola-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .escola-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        /* Estilo para o iframe do Street View */
+        .escola-card iframe {
+            width: 100%;
+            height: 160px;
+            border: 0;
+        }
+
+        .escola-info {
+            padding: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .escola-info h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #0056b3;
+        }
+
+        .escola-info p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .escola-info strong {
+            color: #555;
+        }
+
+        .map-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background-color: #4285F4;
+            /* Cor do Google */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .map-link:hover {
+            background-color: #3367D6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Escolas Municipais de Batatais</h1>
+    </header>
+
+    <main class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Digite o nome da escola para buscar...">
+        </div>
+
+        <!-- O conteúdo das escolas será inserido aqui pelo JavaScript -->
+        <div id="escolas-grid" class="escolas-grid"></div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Prefeitura de Batatais. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- 1. Importa os dados das escolas -->
+    <script src="script.js"></script>
+
+    <!-- 2. Script para gerar os cards na página -->
+    <script>
+        // Garante que o script rode após o carregamento da página
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-input');
+            const gridContainer = document.getElementById('escolas-grid');
+
+            function renderEscolas(escolasParaRenderizar) {
+                gridContainer.innerHTML = ''; // Limpa a grid antes de renderizar
+
+                if (escolasParaRenderizar.length === 0) {
+                    gridContainer.innerHTML = "<p>Nenhuma escola encontrada com este nome.</p>";
+                    return;
+                }
+
+                let allCardsHTML = '';
+                escolasParaRenderizar.forEach(escola => {
+                    const descricaoHTML = escola.descricao ? `<p>${escola.descricao}</p>` : '';
+
+                    // Decide se renderiza um <iframe> ou uma <img>
+                    let mediaHTML = '';
+                    if (escola.imagem.includes('google.com/maps/embed')) {
+                        mediaHTML = `<iframe src="${escola.imagem}" title="Visualização do Street View para ${escola.nome}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                    } else {
+                        mediaHTML = `<a href="${escola.mapaURL}" target="_blank" rel="noopener noreferrer" title="Ver ${escola.nome} no mapa"><img src="${escola.imagem}" alt="Fachada da ${escola.nome}"></a>`;
+                    }
+
+                    allCardsHTML += `
+                        <div class="escola-card">
+                            ${mediaHTML}
+                            <div class="escola-info">
+                                <h3>${escola.nome}</h3>
+                                ${descricaoHTML}
+                                <p><strong>Endereço:</strong> ${escola.endereco}</p>
+                                <p><strong>Telefone:</strong> ${escola.telefone}</p>
+                                <p><strong>Email:</strong> ${escola.email}</p>
+                                <a href="${escola.mapaURL}" class="map-link" target="_blank" rel="noopener noreferrer">Ver no Mapa</a>
+                            </div>
+                        </div>`;
+                });
+                gridContainer.innerHTML = allCardsHTML;
+            }
+
+            // Evento para filtrar as escolas ao digitar no campo de busca
+            searchInput.addEventListener('input', function (event) {
+                const termoBusca = event.target.value.toLowerCase();
+                const escolasFiltradas = escolas.filter(escola =>
+                    escola.nome.toLowerCase().includes(termoBusca)
+                );
+                renderEscolas(escolasFiltradas);
+            });
+
+            // Renderização inicial de todas as escolas
+            renderEscolas(escolas);
+        });
+    </script>
+
+</body>
+
+</html>
